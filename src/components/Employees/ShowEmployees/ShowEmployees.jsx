@@ -1,10 +1,12 @@
 import Ansattkort from "./Ansattkort";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 export default function ShowEmployees() {
   const [employees, setEmployees] = useState([]);
   const [search, setSearch] = useState("");
+  const location = useLocation();
 
   useEffect(() => {
     axios.get("http://localhost:3001/api/get/employees").then((res) => {
@@ -20,7 +22,9 @@ export default function ShowEmployees() {
 
   return (
     <>
-      <h1 className=" text-center text-4xl p-5">Ansatte på Tiller VGS</h1>
+      {location.pathname === "/" ? (
+        <h1 className=" text-center text-4xl p-5">Ansatte på Tiller VGS</h1>
+      ) : null}
       <div className=" bg-slate-300 mx-40 pb-5">
         <input
           type="text"
@@ -34,6 +38,7 @@ export default function ShowEmployees() {
           {filteredEmployees.length > 0 ? (
             filteredEmployees.map((ansatte) => (
               <Ansattkort
+                id={ansatte.ansatt_id}
                 fornavn={ansatte.fornavn}
                 etternavn={ansatte.etternavn}
                 tlf={ansatte.telefonnummer}
@@ -46,18 +51,22 @@ export default function ShowEmployees() {
             </p>
           )}
         </div>
-        <a
-          href="/legg-til-ansatt"
-          className=" ml-10 mx-5 my-5 p-2 border border-solid border-black rounded-md outline-none"
-        >
-          Legg til ansatte
-        </a>
-        <a
-          href="/slett-ansatt"
-          className="  mx-5 my-5 p-2 border border-solid border-black rounded-md outline-none"
-        >
-          Slett ansatt
-        </a>
+        {location.pathname === "/" && (
+          <>
+            <a
+              href="/legg-til-ansatt"
+              className=" ml-10 mx-5 my-5 p-2 border border-solid border-black rounded-md outline-none"
+            >
+              Legg til ansatte
+            </a>
+            <a
+              href="/slett-ansatt"
+              className="  mx-5 my-5 p-2 border border-solid border-black rounded-md outline-none"
+            >
+              Slett ansatt
+            </a>
+          </>
+        )}
       </div>
     </>
   );
